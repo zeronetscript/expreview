@@ -25,6 +25,7 @@ function alreadyHave(title){
 
 
 feed("http://www.expreview.com/rss.php", function(err, articles) {
+//feed("http://127.0.0.1:8080/rss.xml", function(err, articles) {
 
 
     var json_obj={
@@ -59,12 +60,12 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
             continue;
         }
 
-        changed = true;
+        var changed = true;
 
-        post = {
+        var post = {
             'post_id': old_data.next_post_id,
             'title':artical.title,
-            'date_published': (new Date(artical.pubDate)).getTime(),
+            'date_published': (new Date(artical.published)).getTime(),
             'body':artical.content
         };
 
