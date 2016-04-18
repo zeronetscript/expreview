@@ -65,7 +65,7 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
         var post = {
             'post_id': old_data.next_post_id,
             'title':artical.title,
-            'date_published': (new Date(artical.published)).getTime(),
+            'date_published': (new Date(artical.published)).getTime()/1000,
             'body':artical.content
         };
 
@@ -75,7 +75,7 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
     }
 
     if (changed) {
-        old_data.modified = (new Date).getTime();
+        old_data.modified = (new Date).getTime()/1000;
     }
 
     jsonfile.writeFileSync('new_data.json',old_data,{spaces:2});
