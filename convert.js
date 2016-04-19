@@ -80,6 +80,7 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
     }
 
     siteNotice.post_id=old_data.next_post_id;
+    siteNotice.data_published=(new Date(artical.published)).getTime()/1000;
     old_data.post.unshift(siteNotice);
     old_data.next_post_id++;
 
