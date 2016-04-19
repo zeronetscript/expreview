@@ -7,7 +7,7 @@ var jsonfile = require("jsonfile")
 
 
 
-var old_data = jsonfile.readFileSync("old_data.json");
+var old_data = jsonfile.readFileSync("data.json");
 
 var next_post_id = old_data.next_post_id;
 
@@ -53,6 +53,11 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
     var changed = false;
 
 
+    //temp remove first one 
+    var siteNotice = old_data.post[0];
+    old_data.post.splice(0,1);
+    old_data.next_post_id --;
+
     for(var i in old_first){
         var artical = articles[i];
 
@@ -74,9 +79,16 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
         old_data.next_post_id = old_data.next_post_id+1;
     }
 
+    siteNotice.post_id=old_data.next_post_id;
+    old_data.post.unshift(siteNotice);
+    old_data.next_post_id++;
+
     if (changed) {
         old_data.modified = (new Date).getTime()/1000;
+        jsonfile.writeFileSync('new_data.json',old_data,{spaces:2});
+        console.log("write new file to new_data.json");
+    }else{
+        console.log("unchanged");
     }
 
-    jsonfile.writeFileSync('new_data.json',old_data,{spaces:2});
 });
