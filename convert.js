@@ -23,18 +23,13 @@ function alreadyHave(title){
 
 }
 
+function toUTC(date_object){
+
+    return date_object.getTime()/1000 + 8*60*60;
+}
+
 
 feed("http://www.expreview.com/rss.php", function(err, articles) {
-//feed("http://127.0.0.1:8080/rss.xml", function(err, articles) {
-
-
-    var json_obj={
-        "title": "ZeroBlog",
-        "description": "Demo for decentralized, self publishing blogging platform.",
-
-        "links": "- [Create new blog](?Post:3:How+to+have+a+blog+like+this)\n\n- [How does ZeroNet work?](?Post:34:Slides+about+ZeroNet)\n- Site development tutorial: [Part1](?Post:43:ZeroNet+site+development+tutorial+1), [Part2](?Post:46:ZeroNet+site+development+tutorial+2)\n- [ZeroNet documents](http://zeronet.readthedocs.org/)\n- [Source code](https://github.com/HelloZeroNet)"
-    };
-
 
     if (err) throw err;
     // Each article has the following properties:
@@ -59,9 +54,9 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
     old_data.next_post_id --;
 
     for(var i in old_first){
-        var artical = articles[i];
+        var article = articles[i];
 
-        if(alreadyHave(artical.title)){
+        if(alreadyHave(article.title)){
             continue;
         }
 
@@ -69,10 +64,12 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
 
         var post = {
             'post_id': old_data.next_post_id,
-            'title':artical.title,
-            'date_published': (new Date(artical.published)).getTime()/1000,
-            'body':artical.content
+            'title':article.title,
+            'date_published': toUTC(new Date(article.published)),
+            'body':article.content
         };
+
+        console.log("add:"+article.title);
 
         old_data.post.unshift(post);
 
@@ -80,7 +77,7 @@ feed("http://www.expreview.com/rss.php", function(err, articles) {
     }
 
     siteNotice.post_id=old_data.next_post_id;
-    siteNotice.data_published=(new Date(artical.published)).getTime()/1000;
+    siteNotice.date_published=(new Date).getTime()/1000;
     old_data.post.unshift(siteNotice);
     old_data.next_post_id++;
 
